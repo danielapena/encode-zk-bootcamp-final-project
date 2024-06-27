@@ -1,4 +1,4 @@
-program elections_voting.aleo {
+program elections_voting5_234fg2.aleo {
 
     mapping voter_participation: address => bool;
     mapping candidate_votes: address => u64;
@@ -9,6 +9,15 @@ program elections_voting.aleo {
 
     async transition postulate() -> Future {
         return update_candidates(self.caller);
+    }
+
+    async transition qualifies(candidate: address, private votes: u64) -> Future {
+        return is_qualified(candidate, votes);
+    }
+
+    async function is_qualified(candidate: address, votes: u64) {
+        let current_votes: u64 = Mapping::get_or_use(candidate_votes, candidate, 0u64);
+        assert(current_votes >= votes);
     }
 
     async function update_candidates(candidate: address) {
